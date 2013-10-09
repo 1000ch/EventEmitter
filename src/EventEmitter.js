@@ -7,10 +7,30 @@
    */
   function EventEmitter() {}
 
-  //Prototype of EventEmitter
+  // Prototype of EventEmitter
   var Prototype = EventEmitter.prototype;
 
+  // Registered events
   Prototype.events = {};
+
+  /**
+   * Get type specified listeners
+   * @param {String} type
+   * @returns {Object}
+   */
+  Prototype.getListeners = function(type) {
+    var listeners = this.events[type];
+    if(!listeners) {
+      listeners = this.events[type] = [];
+    }
+    // listeners is array of object such as following item
+    //
+    // {
+    //   listener: function() {}
+    //   once: true/false
+    // }
+    return listeners;
+  };
 
   /**
    * Add listener
@@ -20,16 +40,14 @@
    * @param {Boolean} once
    */
   Prototype.on = Prototype.addListener = function(type, listener, once) {
-    var listeners = this.events[type];
-    if(!listeners) {
-      listeners = this.events[type] = [];
-    }
+    var listeners = this.getListeners(type);
     if(listeners.indexOf(listener) === -1) {
       listeners.push({
         listener: listener,
         once: !!once
       });
     }
+    // for chain
     return this;
   };
 
@@ -50,10 +68,7 @@
    * @oaram {Function} listener
    */
   Prototype.off = Prototype.removeListener = function(type, listener) {
-    var listeners = this.events[type];
-    if(!listeners) {
-      listeners = this.events[type] = [];
-    }
+    var listeners = this.getListeners(type);
     if(listener) {
       var index = listeners.indexOf(listener);
       if(index !== -1) {
@@ -62,6 +77,7 @@
     } else {
       listeners = [];
     }
+    // for chain
     return this;
   };
 
@@ -75,6 +91,7 @@
       type = types[i];
       delete this.events[type];
     }
+    // for chain
     return this;
   };
 
@@ -86,6 +103,7 @@
    */
   Prototype.trigger = Prototype.emitEvent = function(type, args) {
     var listener, listeners = this.events[type];
+    // to remove from this
     var array = [];
     for(var i = 0, l = listeners.length;i < l;i++) {
       listener = listeners[i];
@@ -97,6 +115,8 @@
     array.forEach(function(item) {
       this.removeListener(type, item.listener);
     });
+    // for chain
+    return this;
   };
 
 }.call(this));
