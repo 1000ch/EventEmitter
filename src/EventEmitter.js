@@ -1,4 +1,4 @@
-(function() {
+(function(global) {
   'use strict';
 
   /**
@@ -20,7 +20,7 @@
    */
   Prototype.getListeners = function(type) {
     var listeners = this.events[type];
-    if(!listeners) {
+    if (!listeners) {
       listeners = this.events[type] = [];
     }
     // listeners is array of object such as following item
@@ -41,7 +41,7 @@
    */
   Prototype.on = Prototype.addListener = function(type, listener, once) {
     var listeners = this.getListeners(type);
-    if(listeners.indexOf(listener) === -1) {
+    if (listeners.indexOf(listener) === -1) {
       listeners.push({
         listener: listener,
         once: !!once
@@ -69,9 +69,9 @@
    */
   Prototype.off = Prototype.removeListener = function(type, listener) {
     var listeners = this.getListeners(type);
-    if(listener) {
+    if (listener) {
       var index = listeners.indexOf(listener);
-      if(index !== -1) {
+      if (index !== -1) {
         listeners.splice(index, 1);
       }
     } else {
@@ -87,7 +87,7 @@
    */
   Prototype.removeAllListeners = function() {
     var type, types = Object.keys(this.events);
-    for(var i = 0, l = types.length;i < l;i++) {
+    for (var i = 0, l = types.length;i < l;i++) {
       type = types[i];
       delete this.events[type];
     }
@@ -105,10 +105,10 @@
     var listener, listeners = this.events[type];
     // to remove from this
     var array = [];
-    for(var i = 0, l = listeners.length;i < l;i++) {
+    for (var i = 0, l = listeners.length;i < l;i++) {
       listener = listeners[i];
       listener.listener.apply(this, args || []);
-      if(listener.once) {
+      if (listener.once) {
         array.push(listener);
       }
     }
@@ -118,5 +118,11 @@
     // for chain
     return this;
   };
+  
+  if (module && module.exports) {
+    module.exports = EventEmitter;
+  } else {
+    global.EventEmitter = EventEmitter;
+  }
 
 }.call(this));
