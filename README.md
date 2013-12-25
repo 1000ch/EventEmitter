@@ -2,6 +2,8 @@
 
 ## About
 
+[![testling badge](https://ci.testling.com/1000ch/EventEmitter.png)](https://ci.testling.com/1000ch/EventEmitter)
+
 ## API
 
 ### Constructor
