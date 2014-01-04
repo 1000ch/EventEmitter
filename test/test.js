@@ -17,62 +17,72 @@ describe('EventEmitter', function() {
     spy2 = sinon.spy();
   });
   
-  describe('getListeners + addListener + emitEvent', function() {
+  describe('listeners + on + emit', function() {
 
     it('contains a listener', function() {
-      ee.addListener('event1', spy1);
-      expect(ee.getListeners('event1').length).to.equal(1);
-      ee.emitEvent('event1');
+      ee.on('event1', spy1);
+      expect(ee.listeners('event1').length).to.equal(1);
+      ee.emit('event1');
       expect(spy1.callCount).to.equal(1);
-      ee.emitEvent('event1');
+      ee.emit('event1');
       expect(spy1.callCount).to.equal(2);
     });
 
     it('contains some listeners', function() {
-      ee.addListener('event2', spy1);
-      ee.addListener('event2', spy2);
-      expect(ee.getListeners('event2').length).to.equal(2);
+      ee.on('event2', spy1);
+      ee.on('event2', spy2);
+      expect(ee.listeners('event2').length).to.equal(2);
       expect(spy1.callCount).to.equal(0);
       expect(spy2.callCount).to.equal(0);
-      ee.emitEvent('event2');
+      ee.emit('event2');
       expect(spy1.callCount).to.equal(1);
       expect(spy2.callCount).to.equal(1);
-      ee.emitEvent('event2');
+      ee.emit('event2');
       expect(spy1.callCount).to.equal(2);
       expect(spy2.callCount).to.equal(2);
     });
 
     it('contains some listeners with other listeners', function() {
-      ee.addListener('event3', spy1);
-      ee.addListener('event3', function() {});
-      ee.addListener('event3', function() {});
-      ee.addListener('event4', spy2);
-      ee.addListener('event4', function() {});
-      expect(ee.getListeners('event3').length).to.equal(3);
-      expect(ee.getListeners('event4').length).to.equal(2);
-      ee.emitEvent('event3');
+      ee.on('event3', spy1);
+      ee.on('event3', function() {});
+      ee.on('event3', function() {});
+      ee.on('event4', spy2);
+      ee.on('event4', function() {});
+      expect(ee.listeners('event3').length).to.equal(3);
+      expect(ee.listeners('event4').length).to.equal(2);
+      ee.emit('event3');
       expect(spy1.callCount).to.equal(1);
       expect(spy2.callCount).to.equal(0);
-      ee.emitEvent('event4');
+      ee.emit('event4');
       expect(spy1.callCount).to.equal(1);
       expect(spy2.callCount).to.equal(1);
     });
   });
 
-});
+  describe('once', function() {
+    it('fires specified event once', function() {
+      ee.once('event5', spy1);
+      expect(ee.listeners('event5').length).to.equal(1);
+      ee.emit('event5');
+      expect(spy1.callCount).to.equal(1);
+      ee.emit('event5');
+      expect(spy1.callCount).to.equal(1);
+      expect(ee.listeners('event5').length).to.equal(0);
+    });
 
-describe('addOnceListener', function() {
-  
-});
+    it('is removable with off', function() {
+      ee.once('event6', spy1);
+      expect(ee.listeners('event6').length).to.equal(1);
+      ee.off('event6', spy1);
+      ee.emit('event6');
+      expect(spy1.callCount).to.equal(0);
 
-describe('removeListener', function() {
-  
-});
-
-describe('removeAllListeners', function() {
-  
-});
-
-describe('emitEvent', function() {
+      ee.once('event7', spy2);
+      expect(ee.listeners('event7').length).to.equal(1);
+      ee.off('event7');
+      ee.emit('event7');
+      expect(spy1.callCount).to.equal(0);
+    });
+  });
   
 });
