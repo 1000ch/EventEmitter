@@ -12,57 +12,57 @@
 var client = new EventEmitter();
 ```
 
-### `addListener(type, listener, once)` alias `on()`
+### `on(type, listener, once)`
 
 ```js
-client.addListener('received', function() {
+client.on('received', function() {
   console.log('received.');
 }, false);
 ```
 
-### `addOnceListener(type, listener)` alias `once()`
+### `once(type, listener)`
 
 ```js
-client.addOnceListener('received', function() {
+client.once('received', function() {
   console.log('received.');
 });
 ```
 
-### `removeListener(type, listener)` alias `off()`
+### `off(type, listener)`
 
 ```js
-client.removeListener('received');
+client.off('received');
 ```
 
-### `removeAllListeners()`
+### `clear()`
 
 ```js
-client.addListener('received', function() {
+client.on('received', function() {
   console.log('received.');
 }, false);
 
-client.addListener('sent', function() {
+client.on('sent', function() {
   console.log('sent.');
 }, false);
 
-client.removeAllListeners();
+client.clear();
 ```
 
-### `emitEvent()` alias `trigger()`
+### `emit(type)`
 
 ```js
-client.trigger('received');
-client.trigger('sent');
+client.emit('received');
+client.emit('sent');
 ```
 
-### `getListeners(type)`
+### `listeners(type)`
 
 ```js
 client.on('received', function() {
   console.log('received.');
 });
 
-client.getListeners();
+client.listeners();
 ```
 
 ## Problem?
@@ -71,4 +71,4 @@ Please report issues.
 
 ## License
 
-Copyright 1000ch
+MIT

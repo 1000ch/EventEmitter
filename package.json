@@ -4,7 +4,7 @@
   "description": "EventEmitter",
   "main": "src/EventEmitter.js",
   "scripts": {
-    "test": "npm test"
+    "test": "testling"
   },
   "repository": {
     "type": "git",
