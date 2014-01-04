@@ -18,7 +18,7 @@
    * @param {String} type
    * @returns {Object}
    */
-  Prototype.getListeners = function(type) {
+  Prototype.listeners = function(type) {
     var listeners = this.events[type];
     if (!listeners) {
       listeners = this.events[type] = [];
@@ -39,11 +39,11 @@
    * @param {Function} listener
    * @param {Boolean} once
    */
-  Prototype.on = Prototype.addListener = function(type, listener, once) {
-    var listeners = this.getListeners(type);
+  Prototype.on = function(type, listener, once) {
+    var listeners = this.listeners(type);
     if (listeners.indexOf(listener) === -1) {
       listeners.push({
-        listener: listener,
+        callback: listener,
         once: !!once
       });
     }
@@ -58,17 +58,17 @@
    * @param {Function} listener
    */
   Prototype.once = Prototype.addOnceListener = function(type, listener) {
-    return this.addListener(type, listener, true);
+    return this.on(type, listener, true);
   };
 
   /**
    * Remove listener
    * @type {Function}
    * @param {String} type
-   * @oaram {Function} listener
+   * @param {Function} listener
    */
-  Prototype.off = Prototype.removeListener = function(type, listener) {
-    var listeners = this.getListeners(type);
+  Prototype.off = function(type, listener) {
+    var listeners = this.listeners(type);
     if (listener) {
       var index = listeners.indexOf(listener);
       if (index !== -1) {
@@ -85,7 +85,7 @@
    * Remove all listeners
    * @type {Function}
    */
-  Prototype.removeAllListeners = function() {
+  Prototype.clear = function() {
     var type, types = Object.keys(this.events);
     for (var i = 0, l = types.length;i < l;i++) {
       type = types[i];
@@ -96,24 +96,24 @@
   };
 
   /**
-   * Trigger event
+   * Emit event
    * @type {Function}
    * @param {String} type
    * @oaram {Array} args
    */
-  Prototype.trigger = Prototype.emitEvent = function(type, args) {
+  Prototype.emit = function(type, args) {
     var listener, listeners = this.events[type];
     // to remove from this
     var array = [];
     for (var i = 0, l = listeners.length;i < l;i++) {
       listener = listeners[i];
-      listener.listener.apply(this, args || []);
+      listener.callback.apply(this, args || []);
       if (listener.once) {
         array.push(listener);
       }
     }
     array.forEach(function(item) {
-      this.removeListener(type, item.listener);
+      this.off(type, item.callback);
     });
     // for chain
     return this;
