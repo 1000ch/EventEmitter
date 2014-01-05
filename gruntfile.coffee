@@ -8,10 +8,6 @@ module.exports = (grunt) ->
       js:
         files:
           "./dist/EventEmitter.min.js": ["./src/EventEmitter.js"]
-    plato:
-      dist:
-        src: ['src/*.js']
-        dest: 'reports'
     watch:
       files: ["./src/EventEmitter.js"]
       tasks: ["jshint"]
@@ -19,7 +15,6 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-watch'
-  grunt.loadNpmTasks 'grunt-plato'
 
   grunt.registerTask "default", "watch"
-  grunt.registerTask "build", ["uglify", "plato"]
+  grunt.registerTask "build", "uglify"
