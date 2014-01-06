@@ -85,4 +85,38 @@ describe('EventEmitter', function() {
     });
   });
   
+  describe('clear', function() {
+    it('removes normal listener', function() {
+      ee.on('event8', spy1);
+      expect(ee.listeners('event8').length).to.equal(1);
+
+      ee.clear();
+      ee.emit('event8');
+      expect(spy1.callCount).to.equal(0);
+      expect(ee.listeners('event8').length).to.equal(0);
+    });
+    it('removes once listener', function() {
+      ee.once('event9', spy1);
+      expect(ee.listeners('event9').length).to.equal(1);
+
+      ee.clear();
+      ee.emit('event9');
+      expect(spy1.callCount).to.equal(0);
+      expect(ee.listeners('event9').length).to.equal(0);
+    });
+    it('removes all of listeners', function() {
+      ee.on('event10', spy1);
+      ee.once('event11', spy2);
+      expect(ee.listeners('event10').length).to.equal(1);
+      expect(ee.listeners('event11').length).to.equal(1);
+
+      ee.clear();
+      ee.emit('event10');
+      ee.emit('event11');
+      expect(spy1.callCount).to.equal(0);
+      expect(spy2.callCount).to.equal(0);
+      expect(ee.listeners('event10').length).to.equal(0);
+      expect(ee.listeners('event11').length).to.equal(0);
+    });
+  });
 });
