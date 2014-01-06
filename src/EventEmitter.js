@@ -44,10 +44,9 @@
       return this;
     }
     var objects = this.listeners(type);
-    var callbacks = objects.map(function(object) {
+    var index = objects.map(function(object) {
       return object.callback;
-    });
-    var index = callbacks.indexOf(callback);
+    }).indexOf(callback);
     if (index === -1) {
       objects.push({
         callback: callback,
@@ -77,10 +76,9 @@
   Prototype.off = function(type, callback) {
     var objects = this.listeners(type);
     if (callback) {
-      var callbacks = objects.map(function(listener) {
+      var index = objects.map(function(listener) {
         return listener.callback;
-      });
-      var index = callbacks.indexOf(callback);
+      }).indexOf(callback);
       if (index !== -1) {
         objects.splice(index, 1);
       }
@@ -112,7 +110,7 @@
    * @oaram {Array} args
    */
   Prototype.emit = function(type, args) {
-    var object, objects = this.events[type];
+    var object, objects = this.listeners(type);
     // to remove from this
     var array = [];
     for (var i = 0, l = objects.length;i < l;i++) {
