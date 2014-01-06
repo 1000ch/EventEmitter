@@ -50,7 +50,7 @@
     if (index === -1) {
       objects.push({
         callback: callback,
-        once: !!once
+        once: Boolean(once)
       });
     }
     // for chain
