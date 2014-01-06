@@ -17,9 +17,9 @@ describe('EventEmitter', function() {
     spy2 = sinon.spy();
   });
   
-  describe('listeners + on + emit', function() {
+  describe('on', function() {
 
-    it('contains a listener', function() {
+    it('adds a listener', function() {
       ee.on('event1', spy1);
       expect(ee.listeners('event1').length).to.equal(1);
       ee.emit('event1');
@@ -28,7 +28,7 @@ describe('EventEmitter', function() {
       expect(spy1.callCount).to.equal(2);
     });
 
-    it('contains some listeners', function() {
+    it('adds some listeners', function() {
       ee.on('event2', spy1);
       ee.on('event2', spy2);
       expect(ee.listeners('event2').length).to.equal(2);
@@ -42,7 +42,7 @@ describe('EventEmitter', function() {
       expect(spy2.callCount).to.equal(2);
     });
 
-    it('contains some listeners with other listeners', function() {
+    it('adds some listeners with other listeners', function() {
       ee.on('event3', spy1);
       ee.on('event3', function() {});
       ee.on('event3', function() {});
