@@ -26,7 +26,7 @@
     // listeners is array of object such as following item
     //
     // {
-    //   listener: function() {}
+    //   callback: function() {}
     //   once: true/false
     // }
     return listeners;
@@ -36,14 +36,21 @@
    * Add listener
    * @type {Function}
    * @param {String} type
-   * @param {Function} listener
+   * @param {Function} callback
    * @param {Boolean} once
    */
-  Prototype.on = function(type, listener, once) {
-    var listeners = this.listeners(type);
-    if (listeners.indexOf(listener) === -1) {
-      listeners.push({
-        callback: listener,
+  Prototype.on = function(type, callback, once) {
+    if (!callback) {
+      return this;
+    }
+    var objects = this.listeners(type);
+    var callbacks = objects.map(function(object) {
+      return object.callback;
+    });
+    var index = callbacks.indexOf(callback);
+    if (index === -1) {
+      objects.push({
+        callback: callback,
         once: !!once
       });
     }
@@ -55,27 +62,30 @@
    * Add listener which will be executed once
    * @type {Function}
    * @param {String} type
-   * @param {Function} listener
+   * @param {Function} callback
    */
-  Prototype.once = Prototype.addOnceListener = function(type, listener) {
-    return this.on(type, listener, true);
+  Prototype.once = function(type, callback) {
+    return this.on(type, callback, true);
   };
 
   /**
    * Remove listener
    * @type {Function}
    * @param {String} type
-   * @param {Function} listener
+   * @param {Function} callback
    */
-  Prototype.off = function(type, listener) {
-    var listeners = this.listeners(type);
-    if (listener) {
-      var index = listeners.indexOf(listener);
+  Prototype.off = function(type, callback) {
+    var objects = this.listeners(type);
+    if (callback) {
+      var callbacks = objects.map(function(listener) {
+        return listener.callback;
+      });
+      var index = callbacks.indexOf(callback);
       if (index !== -1) {
-        listeners.splice(index, 1);
+        objects.splice(index, 1);
       }
     } else {
-      listeners = [];
+      objects = [];
     }
     // for chain
     return this;
@@ -102,19 +112,17 @@
    * @oaram {Array} args
    */
   Prototype.emit = function(type, args) {
-    var listener, listeners = this.events[type];
+    var object, objects = this.events[type];
     // to remove from this
     var array = [];
-    for (var i = 0, l = listeners.length;i < l;i++) {
-      listener = listeners[i];
-      listener.callback.apply(this, args || []);
-      if (listener.once) {
-        array.push(listener);
+    for (var i = 0, l = objects.length;i < l;i++) {
+      object = objects[i];
+      object.callback.apply(this, args || []);
+      if (!object.once) {
+        array.push(object);
       }
     }
-    array.forEach(function(item) {
-      this.off(type, item.callback);
-    });
+    this.events[type] = array;
     // for chain
     return this;
   };
