@@ -5,13 +5,12 @@
    * EventEmitter class
    * @constructor EventEmitter
    */
-  function EventEmitter() {}
+  function EventEmitter() {
+    this.events = {};
+  }
 
   // Prototype of EventEmitter
   var Prototype = EventEmitter.prototype;
-
-  // Registered events
-  Prototype.events = {};
 
   /**
    * Get type specified listeners
